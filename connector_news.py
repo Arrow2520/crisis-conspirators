@@ -1,6 +1,5 @@
-import pathway
+import pathway as pw
 import time
-from pathway.io.python import read
 
 
 def news_stream():
@@ -29,8 +28,10 @@ def news_stream():
 
     for row in data:
         yield row
-        time.sleep(10)   # simulate real‑time updates
+        time.sleep(10)
 
 
+@pw.io.stream
 def build_table():
-    return read(news_stream())
+    for row in news_stream():
+        yield row
