@@ -2,6 +2,7 @@ import time
 from typing import Generator
 import feedparser
 from newspaper import Article
+from llm_extractor import extract_disaster_info
 
 NATURAL_KEYWORDS = [
     "flood", "earthquake", "tsunami",
@@ -20,13 +21,13 @@ def is_natural_disaster(text: str) -> bool:
     return any(k in text for k in NATURAL_KEYWORDS)
 
 def list_articles(website: str):
-    feed = feedparser.parse(website)
-
-    urls = []
-    for entry in feed.entries:
-        urls.append(entry.link)
-
-    return urls
+    try:
+        feed = feedparser.parse(website)
+        urls = [entry.link for entry in feed.entries]
+        return urls
+    except Exception as e:
+        print(f"Error parsing feed {website}: {e}")
+        return []
 
 
 def scrape_articles(website_urls: list[str], refresh_interval: int) -> Generator:
@@ -54,24 +55,27 @@ def scrape_articles(website_urls: list[str], refresh_interval: int) -> Generator
 
                 indexed_articles.add(url)
 
-                record = {
-                    "data": {
-                        "title": title,
-                        "event_type": "disaster",
-                        "alert_level": "unknown",
-                        "country": "unknown",
-                        "region": None,
-                        "timestamp": None,
-                        "status": "active",
-                    }
-                }
-
-                # Ignore non-natural disaster events
-                if not is_natural_disaster(record["data"].get("title", "")):
+                if not is_natural_disaster(title + " " + text):
                     continue
 
-                print("SCRAPED:", record)
+                extracted = extract_disaster_info(title, text)
 
+                record = {
+                    "title": title,
+                    "content": text,
+                    "event_type": "disaster",
+                    "status": "active",
+                    "timestamp": None,
+                    "alert_level": extracted.get("severity", "unknown"),
+                    "country": extracted.get("location", "unknown"),
+                    "region": None,
+                    "disaster_type": extracted.get("disaster_type", "unknown"),
+                    "deaths": extracted.get("deaths"),
+                    "injured": extracted.get("injured"),
+                    "summary": extracted.get("summary", ""),
+                }
+
+                print("SCRAPED:", record)
                 yield record
 
         time.sleep(refresh_interval)

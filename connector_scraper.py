@@ -1,6 +1,6 @@
 import pathway as pw
 from pathway.io.python import ConnectorSubject
-from scraper import scrape_articles   # your generator
+from scraper import scrape_articles
 
 
 class NewsScraperSubject(ConnectorSubject):
@@ -14,8 +14,6 @@ class NewsScraperSubject(ConnectorSubject):
             self.website_urls,
             refresh_interval=self.refresh_interval,
         ):
-            # VERY IMPORTANT:
-            # We normalize into the SAME keys expected by transformations.py
             self.next(
                 data={
                     "title": article.get("title", "Unknown Event"),
@@ -29,12 +27,10 @@ class NewsScraperSubject(ConnectorSubject):
             )
 
 
-# ------ Pathway Schema -------
 class ScraperSchema(pw.Schema):
-    data: dict   # raw structured object for the transformations module
+    data: dict
 
 
-# ------ Function the pipeline imports -------
 def build_scraper_table():
     subject = NewsScraperSubject(
         website_urls=[

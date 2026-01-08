@@ -1,5 +1,7 @@
 import time
-from typing import Generator, List
+from typing import Generator
+from llm_extractor import extract_disaster_info
+
 
 NATURAL_KEYWORDS = [
     "flood", "earthquake", "tsunami",
@@ -17,45 +19,60 @@ def is_natural_disaster(text: str) -> bool:
     text = text.lower()
     return any(k in text for k in NATURAL_KEYWORDS)
 
-
-def scrape_from_file(path: str, refresh_interval: int = 10) -> Generator:
-    """
-    Continuously watches the file and yields NEW disaster records when added.
-    """
-
-    seen: List[str] = []
+def scrape_from_file(filepath: str, refresh_interval: int = 5) -> Generator:
+    seen_titles = set()
 
     while True:
         try:
-            with open(path, "r", encoding="utf-8") as f:
-                lines = [line.strip() for line in f if line.strip()]
+            with open(filepath, "r", encoding="utf-8") as f:
+                raw = f.read().strip()
         except FileNotFoundError:
-            print(f"File not found: {path}")
+            print(f"Waiting for {filepath} to be created...")
             time.sleep(refresh_interval)
             continue
 
-        for line in lines:
-            if line in seen:
+        if not raw:
+            time.sleep(refresh_interval)
+            continue
+
+        blocks = raw.split("\n\n")
+
+        for block in blocks:
+            lines = [l.strip() for l in block.split("\n") if l.strip()]
+            if len(lines) < 2:
                 continue
 
-            seen.append(line)
+            title = lines[0]
+            content = "\n".join(lines[1:])
 
-            # filter non-natural disasters
-            if not is_natural_disaster(line):
+            if not is_natural_disaster(title + " " + content):
                 continue
+
+            if title in seen_titles:
+                continue
+
+            seen_titles.add(title)
+
+            extracted = extract_disaster_info(title, content)
 
             record = {
-                "title": line,
+                "title": title,
+                "content": content,
                 "event_type": "disaster",
-                "alert_level": "unknown",
-                "country": "unknown",
-                "region": None,
-                "timestamp": None,
                 "status": "active",
+                "timestamp": None,
+
+                "alert_level": extracted.get("severity", "unknown"),
+                "country": extracted.get("location", "unknown"),
+                "region": None,
+
+                "disaster_type": extracted.get("disaster_type", "unknown"),
+                "deaths": extracted.get("deaths"),
+                "injured": extracted.get("injured"),
+                "summary": extracted.get("summary", ""),
             }
 
-            print("SCRAPED:", record)
-
+            print(f"FILE SCRAPED: {title}")
             yield record
 
         time.sleep(refresh_interval)

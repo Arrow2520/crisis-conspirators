@@ -4,6 +4,7 @@ import requests
 from groq import Groq
 from dotenv import load_dotenv
 from pipeline import build_vector_server
+from flask import Flask, request, jsonify, render_template
 import pathway as pw
 import threading
 from pathway.xpacks.llm.vector_store import VectorStoreClient
@@ -22,13 +23,17 @@ groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 
 def retrieve_context(user_query: str, k: int = 5):
-    results = vector_client.query(
-        query=user_query,
-        k=k
-    )
+    try:
+        results = vector_client.query(
+            query=user_query,
+            k=k,
+        )
+    except Exception as e:
+        print("Vector store error:", e)
+        return []
 
-    docs = [r["text"] for r in results]
-    return docs
+    return [r["text"] for r in results]
+
 
 
 def generate_answer(question: str, context_docs: list[str]):
@@ -58,6 +63,9 @@ Answer clearly and concisely. Include location and severity if mentioned.
 
     return resp.choices[0].message.content
 
+@app.route("/")
+def home():
+    return render_template("index.html")
 
 @app.route("/ask", methods=["POST"])
 def ask():
@@ -68,6 +76,11 @@ def ask():
 
     print(" Retrieving context...")
     docs = retrieve_context(question)
+    if not docs:
+        return jsonify({
+            "answer": "No active disaster information is currently available.",
+            "sources": []
+        })
     print(" Retrieved docs:", len(docs))
 
     print(" Generating answer...")
@@ -83,4 +96,4 @@ def health():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(port=5000, debug=True)

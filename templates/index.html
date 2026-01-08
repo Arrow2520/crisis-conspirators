@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crisis Intel | Live Monitor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="main-container">
+        <header>
+            <h1>Crisis Intel <span class="badge">LIVE</span></h1>
+            <p>Real-time disaster monitoring & intelligence stream</p>
+        </header>
+
+        <div id="chat-box" class="chat-box">
+            <div class="message bot-message">
+                <div class="content">
+                    System Online. Connected to live news streams. <br>
+                    Ask me about floods, earthquakes, or alerts in specific regions.
+                </div>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Type command or query..." autocomplete="off">
+            <button onclick="sendMessage()">SEND</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

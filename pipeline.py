@@ -6,7 +6,6 @@ from pathway.xpacks.llm.vector_store import VectorStoreServer
 from pathway.xpacks.llm.embedders import SentenceTransformerEmbedder
 
 # --- 1. Define the Schema ---
-# We tell Pathway: "Expect a table with one column named 'data' that holds a dictionary"
 class InputSchema(pw.Schema):
     data: dict
 
@@ -26,14 +25,12 @@ class FileSubject(ConnectorSubject):
 def build_scraper_table():
     subject = FileSubject("disasters.txt", refresh_interval=5)
 
-    # We must pass the schema here
     return pw.io.python.read(subject, schema=InputSchema)
 
 # --- 4. Build the Vector Server ---
 def build_vector_server():
     table = build_scraper_table()
 
-    # transformations.py expects 'pw.this.data', which matches our schema
     docs = table.select(
         data=pw.apply(narrative_parser, pw.this.data),
         _metadata=pw.apply(extract_metadata, pw.this.data),
