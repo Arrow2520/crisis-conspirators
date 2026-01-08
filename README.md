@@ -56,22 +56,22 @@ to index instantly.
 
 crisis-conspirators/
 │
-├── app.py # Flask backend + chatbot API
-├── pipeline.py # Pathway streaming + vector store
-├── llm_extractor.py # LLM-based disaster intelligence
-├── transformations.py # Streaming feature engineering
-├── scraper.py # Live RSS news ingestion
-├── file_scraper.py # Simulated streaming via text file
-├── connector_scraper.py # Custom Pathway connector
-├── disasters.txt # Editable live disaster stream
+├── app.py # Flask backend + chatbot API/
+├── pipeline.py # Pathway streaming + vector store/
+├── llm_extractor.py # LLM-based disaster intelligence/
+├── transformations.py # Streaming feature engineering/
+├── scraper.py # Live RSS news ingestion/
+├── file_scraper.py # Simulated streaming via text file/
+├── connector_scraper.py # Custom Pathway connector/
+├── disasters.txt # Editable live disaster stream/
 │
-├── templates/ # Flask HTML templates
-├── static/ # CSS + JS assets
+├── templates/ # Flask HTML templates/
+├── static/ # CSS + JS assets/
 │
-├── requirements.txt
-├── .env # API keys & configuration
-├── .gitignore
-└── LICENSE
+├── requirements.txt/
+├── .env # API keys & configuration/
+├── .gitignore/
+└── LICENSE/
 
 ## Live Data Ingestion (Requirement 1)
 
