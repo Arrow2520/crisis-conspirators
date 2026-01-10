@@ -283,7 +283,7 @@ The ingestion source is selected **centrally** in `pipeline.py`, without modifyi
 
 
 # 👥 Contributors Note
-## **Note**:
+ **Note**:
 This project was developed and owned entirely by two team members:
 
 * Arrow2520
