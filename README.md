@@ -2,39 +2,6 @@
 
 A Live AI system for real-time disaster awareness, severity analysis, and interactive intelligence — powered by Pathway's streaming engine and LLM-driven reasoning.
 
-## ⚖️ **Instructions for Judges (Start Here)**
-
-**Objective**: Verify the "Live AI" capability where the system updates its knowledge base instantly without restarting.
-
-**Setup**: Ensure you have your .env file with GROQ_API_KEY.
-
-**Launch**: Run ./start.sh (or use Docker).
-
-**Step 1** - Initial Query:
-
-Open http://localhost:5000.
-
-Ask: "Is there a flood in Kolkata?"
-
-Result: The bot should reply that it has no current data on this.
-
-**Step 2** - Inject Live Data:
-
-Open disasters.txt in the root folder.
-
-Paste the following line (strictly in the following format as the first line serves as title and the second line as the article for the news) and save:
-
-Severe flooding in Kolkata.\
-72 hours of heavy rainfall caused severe waterlogging across Kolkata affecting thousands.
-
-**Step 3** - Instant Verification:
-
-Immediately ask the bot again: "Is there a flood in Kolkata?"
-
-Result: The bot will now confirm the flood and provide details.
-
-NOTE: No restart or re-indexing is required.
-
 ## 📖 **Overview**
 
 Crisis Intel LIVE is a real-time Retrieval-Augmented Generation (RAG) application that continuously ingests disaster-related data streams, enriches them using LLM-based intelligence, and serves up-to-date, context-aware answers through an interactive chatbot interface.
@@ -177,6 +144,43 @@ Web App runs at: http://localhost:5000\
 
 * Web App runs at: http://localhost:5000\
 * Open [http://localhost:5000](http://localhost:5000) in browser.
+
+## ⚖️ **Instructions for Judges (Start Here)**
+
+**Objective**: Verify the "Live AI" capability where the system updates its knowledge base instantly without restarting.
+
+**Setup**: Ensure you have your .env file with GROQ_API_KEY.
+
+**Launch**: Run ./start.sh (or use Docker).
+
+**Step 1** - Initial Query:
+
+Open http://localhost:5000.
+
+Ask: "Is there any disaster in Chennai?"
+
+Result: The bot should reply that it has no current data on this.
+
+**Step 2** - Inject Live Data:
+
+Open disasters.txt in the root folder.
+
+Paste the following line (strictly in the following format as the first line serves as title and the second line as the article for the news) and save:
+
+Cyclone approaches Chennai coast triggering evacuation alerts\
+A powerful cyclone is moving towards the Chennai coastline with wind speeds exceeding 110 km/h.\
+Coastal areas have been placed under high alert and evacuation orders have been issued.\
+Fishing activities have been suspended and disaster management teams are on standby.\
+Residents in low-lying regions are being shifted to cyclone shelters.\
+The severity of the cyclone is being closely monitored by meteorological authorities.\
+
+**Step 3** - Instant Verification:
+
+Immediately ask the bot again: "Is there any disaster in Chennai?"
+
+Result: The bot will now confirm the cyclone and provide details.
+
+NOTE: No restart or re-indexing is required.
 
 ## 🧠 **LLM Integration & Streaming**
 
