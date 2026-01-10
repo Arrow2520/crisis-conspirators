@@ -87,7 +87,7 @@ RAG Backend: Flask API retrieves relevant contexts and generates answers.
 Frontend: Web-based chat interface.
 
 📂 **Repository Structure**
-
+```
 crisis-conspirators/
 │
 ├── app.py                 # Flask backend + chatbot API
@@ -107,7 +107,7 @@ crisis-conspirators/
 ├── requirements.txt       # Python dependencies
 ├── .env                   # API keys & configuration
 └── LICENSE
-
+```
 
 🚀 **Running the Project**
 
