@@ -22,9 +22,10 @@ Result: The bot should reply that it has no current data on this.
 
 Open disasters.txt in the root folder.
 
-Paste the following line and save:
+Paste the following line (strictly in the following format as the first line serves as title and the second line as the article for the news) and save:
 
-Severe flooding in Kolkata. 72 hours of heavy rainfall caused severe waterlogging across Kolkata affecting thousands.
+Severe flooding in Kolkata.\
+72 hours of heavy rainfall caused severe waterlogging across Kolkata affecting thousands.
 
 **Step 3** - Instant Verification:
 
@@ -110,79 +111,92 @@ crisis-conspirators/
 ```
 
 ## 🚀 **Running the Project**
-
-**Option A: Quick Start Script (Recommended)**
-
-We have provided a convenience script to start both the Pathway backend and the Flask frontend.
-
-Configure Environment:
-Create a .env file in the root directory:
-
+First configure the API key in a .env file (in root directory), by creating one from https://console.groq.com/home
 GROQ_API_KEY=your_api_key_here
 
+### **Option A: Docker**
 
-Run the Script:
+* Build the Image:
 
-chmod +x start.sh
-./start.sh
+`docker build -t crisis-intel` .
 
 
+* Run the Container:
+
+`docker run -p 5000:5000 -p 8000:8000 --env-file .env crisis-intel`
 Pathway runs at: http://localhost:8000
 
-Web App runs at: http://localhost:5000
+Web App runs at: http://localhost:5000\
+* Open [http://localhost:5000](http://localhost:5000) in browser.
 
-**Option B: Docker**
+### **Option B: Quick Start Script**
 
-Build the Image:
+* We have provided a convenience script to start both the Pathway backend and the Flask frontend.
 
-docker build -t crisis-intel .
+* Configure Environment:
+   Create a .env file in the root directory:
 
-
-Run the Container:
-
-docker run -p 5000:5000 -p 8000:8000 --env-file .env crisis-intel
-
-
-**Option C: Manual Setup**
-
-Setup Environment:
-
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
+   GROQ_API_KEY=your_api_key_here
 
 
-Start Pathway Vector Server:
-This starts the data ingestion pipeline and vector index.
+* Run the Script:
 
-python pipeline.py
+`chmod +x start.sh`
+`./start.sh`
+
+* Pathway runs at: http://localhost:8000
+
+* Web App runs at: http://localhost:5000\
+* Open [http://localhost:5000](http://localhost:5000) in browser.
+
+### **Option C: Manual Setup**
+
+* Configure Environment:
+   Create a `.env` file in the root directory:
+
+   `GROQ_API_KEY=your_api_key_here`
+
+* Setup Environment:
+
+`python -m venv venv`
+`source venv/bin/activate`
+`pip install -r requirements.txt`
 
 
-Start Flask App:
-In a new terminal window:
+* Start Pathway Vector Server:
+  This starts the data ingestion pipeline and vector index.
 
-python app.py
+`python pipeline.py`
 
+
+* Start Flask App:
+  In a new terminal window:
+
+`python app.py`
+* Pathway runs at: http://localhost:8000
+
+* Web App runs at: http://localhost:5000\
+* Open [http://localhost:5000](http://localhost:5000) in browser.
 
 ## 🧠 **LLM Integration & Streaming**
 
-Streaming Transformations (Requirement 3)
+### Streaming Transformations
 
 All data transformations are executed incrementally using Pathway tables:
 
-NLP parsing & Metadata extraction
+* NLP parsing & Metadata extraction
 
-Severity classification & Narrative generation
+* Severity classification & Narrative generation
 
-Vector indexing
+* Vector indexing
 
-No batch reprocessing is required — only delta updates propagate.
+* No batch reprocessing is required — only delta updates propagate.
 
-LLM Stages (Requirement 4)
+### LLM Stages
 
-Pre-Index Intelligence (LLM Extractor): Each incoming article is processed to extract disaster type, severity, location, and a factual summary.
+* Pre-Index Intelligence (LLM Extractor): Each incoming article is processed to extract disaster type, severity, location, and a factual summary.
 
-RAG Answer Generation: User queries are answered using Pathway vector retrieval + LLM reasoning over the latest indexed facts.
+* RAG Answer Generation: User queries are answered using Pathway vector retrieval + LLM reasoning over the latest indexed facts.
 
 ## 📊 **Example Scenario**
 
@@ -202,22 +216,67 @@ User: "Any disaster in Kolkata?"
 
 Bot: "There is a severe flood in Kolkata caused by continuous rainfall..."
 
+## 🔄 Data Ingestion Modes (Streaming Sources)
+
+Crisis Intel LIVE is designed with a **pluggable ingestion layer**, allowing it to operate on multiple real-time data sources without changing downstream logic.
+
+### Mode 1: Simulated Live Stream (Default – Judge Friendly)
+
+- **Source**: `disasters.txt`
+- **Connector**: Custom Pathway **Python Connector**
+- **Behavior**:
+  - The file is continuously monitored in streaming mode.
+  - New disaster entries are ingested instantly.
+  - Editing the file triggers real-time updates **without restarting the system**.
+
+This mode is enabled by default to ensure **deterministic, reproducible evaluation** for judges.
+
+---
+
+### Mode 2: Live News Scraping (Optional)
+
+- **Source**: Real-world RSS feeds and news websites
+- **Connector**: Pathway Python Connector wrapping a web scraper
+- **Libraries used**:
+  - `feedparser`
+  - `newspaper3k`
+- **Processing pipeline**:
+  - Articles are fetched continuously
+  - Each article is enriched using an LLM
+  - Results are incrementally indexed into the vector store
+
+This mode demonstrates how the system can be extended to **production-grade live data feeds**.
+
+---
+
+## 🔧 Switching Between File Stream and Live News
+
+The ingestion source is selected **centrally** in `pipeline.py`, without modifying any transformation, embedding, or retrieval logic.
+
+### Default (File-Based Stream)
+
+`table = build_scraper_table(mode="file")`
+
+### Live News Scraping
+
+`table = build_scraper_table(mode="news")`
+
 ## 🔮 **Scalability & Extensions**
 
-Data Sources: Replace file streams with Kafka or CDC pipelines.
+* Data Sources: Replace file streams with Kafka or CDC pipelines.
 
-Deployment: Docker / Kubernetes integration.
+* Deployment: Docker / Kubernetes integration.
 
-Analytics: Add temporal windows and alert thresholds.
+* Analytics: Add temporal windows and alert thresholds.
 
-Domains: Extend to Epidemic monitoring, Infrastructure failures, or Financial risk intelligence.
+* Domains: Extend to Epidemic monitoring, Infrastructure failures, or Financial risk intelligence.
 
 ## 💡 **Key Learnings**
 
-Streaming-first thinking fundamentally changes system design.
+* Streaming-first thinking fundamentally changes system design.
 
-LLMs are most effective before indexing to create cleaner retrieval contexts.
+* LLMs are most effective before indexing to create cleaner retrieval contexts.
 
-Pathway removes traditional batch reprocessing bottlenecks.
+* Pathway removes traditional batch reprocessing bottlenecks.
 
-Live AI is about behavior change, not just static answers.
+* Live AI is about behavior change, not just static answers.
