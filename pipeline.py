@@ -1,5 +1,6 @@
 import pathway as pw
 from file_scraper import scrape_from_file
+from scraper import scrape_articles
 from transformations import narrative_parser, extract_metadata
 from pathway.io.python import ConnectorSubject
 from pathway.xpacks.llm.vector_store import VectorStoreServer
@@ -21,15 +22,27 @@ class FileSubject(ConnectorSubject):
         for record in scrape_from_file(self.path, refresh_interval=self.refresh_interval):
             self.next(data=record)
 
+class NewsSubject(ConnectorSubject):
+    def run(self):
+        for record in scrape_articles():
+            self.next(data=record)
+
+
 # --- 3. Build the Table ---
-def build_scraper_table():
-    subject = FileSubject("disasters.txt", refresh_interval=5)
+def build_scraper_table(mode="file"):
+    if mode == "file":
+        subject = FileSubject("disasters.txt", refresh_interval=5)
+    elif mode == "news":
+        subject = NewsSubject()
+    else:
+        raise ValueError("Invalid ingestion mode")
 
     return pw.io.python.read(subject, schema=InputSchema)
 
+
 # --- 4. Build the Vector Server ---
 def build_vector_server():
-    table = build_scraper_table()
+    table = build_scraper_table(mode="file") # Change mode to "news" to scrape live feed from RSS News Stream
 
     docs = table.select(
         data=pw.apply(narrative_parser, pw.this.data),
