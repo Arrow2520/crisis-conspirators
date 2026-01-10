@@ -280,3 +280,16 @@ The ingestion source is selected **centrally** in `pipeline.py`, without modifyi
 * Pathway removes traditional batch reprocessing bottlenecks.
 
 * Live AI is about behavior change, not just static answers.
+
+
+# 👥 Contributors Note
+## **Note**:
+This project was developed and owned entirely by two team members:
+
+* Arrow2520
+* adivakohli-cloud
+
+The GitHub username Satadru2005 appears in the commit history only because one of the team members temporarily used a different laptop (a friend’s system) to build and commit the Docker configuration.
+
+No external contributor was involved in the design, development, or decision-making of the project.
+The appearance of this username is purely a tooling artifact and not reflective of team composition.
