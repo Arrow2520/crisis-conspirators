@@ -55,6 +55,11 @@ def scrape_from_file(filepath: str, refresh_interval: int = 5) -> Generator:
 
             extracted = extract_disaster_info(title, content)
 
+            d_type = extracted.get("disaster_type")
+            if d_type is None or d_type == "unknown":
+                print(f"SKIPPING (Not a disaster): {title}")
+                continue
+
             record = {
                 "title": title,
                 "content": content,

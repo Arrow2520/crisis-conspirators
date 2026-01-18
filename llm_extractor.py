@@ -56,7 +56,7 @@ Article Content:
         end = raw_text.rfind("}") + 1
         clean_json = raw_text[start:end]
 
-        data = json.loads(raw_text)
+        data = json.loads(clean_json)
 
         print("LLM EXTRACTED:", data)
         return {

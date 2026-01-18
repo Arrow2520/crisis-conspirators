@@ -60,6 +60,11 @@ def scrape_articles(website_urls: list[str], refresh_interval: int) -> Generator
 
                 extracted = extract_disaster_info(title, text)
 
+                d_type = extracted.get("disaster_type")
+                if d_type is None or d_type == "unknown":
+                    print(f"SKIPPING (Not a disaster): {title}")
+                    continue
+
                 record = {
                     "title": title,
                     "content": text,
