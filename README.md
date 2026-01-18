@@ -104,6 +104,7 @@ Web App runs at: http://localhost:5000\
    Create a .env file in the root directory:
 
    GROQ_API_KEY=your_api_key_here
+   INGEST_MODE=file (news to stream live news)
 
 
 * Run the Script:
@@ -145,11 +146,11 @@ Web App runs at: http://localhost:5000\
 * Web App runs at: http://localhost:5000\
 * Open [http://localhost:5000](http://localhost:5000) in browser.
 
-## ⚖️ **Instructions for Judges (Start Here)**
+## ⚖️ **Instructions for Judges**
 
 **Objective**: Verify the "Live AI" capability where the system updates its knowledge base instantly without restarting.
 
-**Setup**: Ensure you have your .env file with GROQ_API_KEY.
+**Setup**: Ensure you have your .env file with GROQ_API_KEY and the INGEST_MODE=file.
 
 **Launch**: Run the Docker file.
 
