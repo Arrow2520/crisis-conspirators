@@ -233,6 +233,12 @@ Crisis Intel LIVE is designed with a **pluggable ingestion layer**, allowing it 
   - New disaster entries are ingested instantly.
   - Editing the file triggers real-time updates **without restarting the system**.
 
+**Enable this mode** by setting in `.env`:
+
+```env
+INGEST_MODE=file
+```
+
 This mode is enabled by default to ensure **deterministic, reproducible evaluation** for judges.
 
 ---
@@ -250,20 +256,14 @@ This mode is enabled by default to ensure **deterministic, reproducible evaluati
   - Results are incrementally indexed into the vector store
 
 This mode demonstrates how the system can be extended to **production-grade live data feeds**.
+**Enable this mode** by setting in `.env`:
+
+```env
+INGEST_MODE=file
+```
 
 ---
 
-## 🔧 Switching Between File Stream and Live News
-
-The ingestion source is selected **centrally** in `pipeline.py`, without modifying any transformation, embedding, or retrieval logic.
-
-### Default (File-Based Stream)
-
-`table = build_scraper_table(mode="file")`
-
-### Live News Scraping
-
-`table = build_scraper_table(mode="news")`
 
 ## 🔮 **Scalability & Extensions**
 
