@@ -260,7 +260,7 @@ This mode demonstrates how the system can be extended to **production-grade live
 **Enable this mode** by setting in `.env`:
 
 ```env
-INGEST_MODE=file
+INGEST_MODE=news
 ```
 
 ---
