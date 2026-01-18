@@ -151,7 +151,7 @@ Web App runs at: http://localhost:5000\
 
 **Setup**: Ensure you have your .env file with GROQ_API_KEY.
 
-**Launch**: Run ./start.sh (or use Docker).
+**Launch**: Run the Docker file.
 
 **Step 1** - Initial Query:
 
